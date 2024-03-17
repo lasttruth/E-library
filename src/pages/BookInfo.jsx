@@ -1,13 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Rating from "../components/UI/Rating";
 import Price from "../components/UI/Price";
 import Book from "../components/UI/Book";
 
-const BookInfo = ({ books }) => {
+const BookInfo = ({ books, addToCart, cart }) => {
   const { id } = useParams();
   const book = books.find((book) => +book.id === +id);
+
+  function addBookToCart(book) {
+    addToCart(book);
+  }
+
+  function bookExistsOnCart() {
+    return cart.find((book) => +book.id === +id);
+  }
 
   return (
     <div id="books__body">
@@ -18,7 +26,7 @@ const BookInfo = ({ books }) => {
               <Link to="/books" className="book__link">
                 <FontAwesomeIcon icon="arrow-left" />
               </Link>
-              <Link to="book" className="book__link">
+              <Link to="/books" className="book__link">
                 <h2 className="book__selected--title--top">Books</h2>
               </Link>
             </div>
@@ -36,21 +44,29 @@ const BookInfo = ({ books }) => {
                   />
                 </div>
                 <div className="book__summary">
-                  <div className="book__summary--title">summary</div>
-                  <h3 className="book__summary--para">
+                  <h3 className="book__summary--title">Summary</h3>
+                  <p className="book__summary--para">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
                     qui dolorem dolores quam officia consectetur nemo debitis
                     nesciunt distinctio aliquam quod architecto neque commodi,
                     culpa dolor. Nulla illum quae tempora.
-                  </h3>
-                  <h3 className="book__summary--para">
+                  </p>
+                  <p className="book__summary--para">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
                     qui dolorem dolores quam officia consectetur nemo debitis
                     nesciunt distinctio aliquam quod architecto neque commodi,
                     culpa dolor. Nulla illum quae tempora.
-                  </h3>
+                  </p>
                 </div>
-                <button className="btn">Add to Cart</button>
+                {bookExistsOnCart() ? (
+                  <Link to={`/cart`} className="book__link">
+                    <button className="btn">Checkout</button>
+                  </Link>
+                ) : (
+                  <button className="btn" onClick={() => addBookToCart(book)}>
+                    Add to Cart
+                  </button>
+                )}
               </div>
             </div>
           </div>
